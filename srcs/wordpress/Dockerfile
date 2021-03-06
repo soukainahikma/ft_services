@@ -20,6 +20,7 @@ RUN tar -xzvf latest.tar.gz
 RUN rm latest.tar.gz
 RUN mv /wordpress /www/wordpress
 RUN ln -s /www/wordpress/ /var/www/localhost/htdocs/wordpress
+COPY files/wp-config.php /www/wordpress/wp-config.php
 #RUN rc-service nginx reload
 
 COPY files/script.sh /script.sh
