@@ -12,26 +12,20 @@ COPY files/index.html /www/index.html
 RUN apk add vim
 RUN apk add openrc
 RUN rc-update add nginx default
-RUN apk add openssl
-RUN openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=mydomain.com" -addext "subjectAltName=DNS:mydomain.com" -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 #RUN openrc default
 ####################################
-RUN apk add openssh
-RUN rc-update add sshd
-RUN rc-status
 #RUN /etc/init.d/sshd start
-COPY files/sshd_config /etc/ssh/sshd_config
-COPY files/password /password
-RUN adduser deploy < /password
 RUN apk add php7-fpm php7-mcrypt php7-soap php7-openssl php7-gmp php7-pdo_odbc php7-json php7-dom php7-pdo php7-zip php7-mysqli php7-sqlite3 php7-apcu php7-pdo_pgsql php7-bcmath php7-gd php7-odbc php7-pdo_mysql php7-pdo_sqlite php7-gettext php7-xmlreader php7-xmlrpc php7-bz2 php7-iconv php7-pdo_dblib php7-curl php7-ctype php7-session php7-mbstring
 RUN wget http://files.directadmin.com/services/all/phpMyAdmin/phpMyAdmin-5.0.2-all-languages.tar.gz
 RUN tar zxvf phpMyAdmin-5.0.2-all-languages.tar.gz
 RUN rm phpMyAdmin-5.0.2-all-languages.tar.gz
 RUN mv phpMyAdmin-5.0.2-all-languages phpmyadmin
 RUN mv /phpmyadmin /www/phpmyadmin
+COPY files/config.inc.php /www/phpmyadmin/config.inc.php
 RUN ln -s /www/phpmyadmin/ /var/www/localhost/htdocs/phpmyadmin
 #RUN /etc/init.d/sshd restart
 #RUN ssh deploy@localhost -p 22
 COPY files/script.sh /script.sh
+
 RUN chmod 777 /script.sh
 ENTRYPOINT ["/script.sh"]

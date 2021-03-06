@@ -2,3 +2,82 @@ docker-machine create --driver virtualbox default
 docker-machine env default
 eval $(docker-machine env default)
 curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v18.09.1-rc1/boot2docker.iso 
+
+        volumeMounts:
+        - name: es-persistent-storage
+          mountPath: /var/lib/data
+        - name: es-secret-dir
+          mountPath: /var/lib/secret
+        - name: es-config-dir
+          mountPath: /var/lib/config
+      volumes:
+      - name: es-persistent-storage
+        persistentVolumeClaim:
+          claimName: es-pv-claim
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+     name: mysql_backup_claim
+spec:
+     accessModes:
+     - ReadWriteOnce
+     resources:
+       requests:
+         storage: 1Gi
+
+
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+
+
+
+apiVersion: v1                                  
+kind: PersistentVolumeClaim                                  
+metadata:                                  
+     name: mysql-backup-claim                                  
+spec:                                  
+     accessModes:                                  
+     - ReadWriteOnce                                  
+     resources:                                  
+       requests:                                  
+         storage: 1Gi                                  
+---
+
+   volumeMounts:
+          - name: mysql-backup
+            mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-backup
+          persistentVolumeClaim:
+            claimName: mysql-backup-claim
