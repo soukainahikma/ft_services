@@ -21,6 +21,10 @@ RUN mv /phpmyadmin /www/phpmyadmin
 RUN mkdir /www/phpmyadmin/tmp && chmod 777 /www/phpmyadmin/tmp
 COPY files/config.inc.php /www/phpmyadmin/config.inc.php
 RUN ln -s /www/phpmyadmin/ /var/www/localhost/htdocs/phpmyadmin
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories  
+RUN apk add telegraf 
+RUN rc-update add telegraf default
+COPY files/telegraf.conf /etc/telegraf.conf
 COPY files/script.sh /script.sh
 
 RUN chmod 777 /script.sh

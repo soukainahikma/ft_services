@@ -14,17 +14,10 @@ RUN apk add openrc
 RUN rc-update add nginx default
 RUN apk add openssl
 RUN openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=mydomain.com" -addext "subjectAltName=DNS:mydomain.com" -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
-#RUN openrc default
-####################################
-RUN apk add openssh
-RUN rc-update add sshd
-RUN rc-status
-#RUN /etc/init.d/sshd start
-COPY files/sshd_config /etc/ssh/sshd_config
-COPY files/password /password
-RUN adduser deploy < /password
-#RUN /etc/init.d/sshd restart
-#RUN ssh deploy@localhost -p 22
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories  
+RUN apk add telegraf 
+RUN rc-update add telegraf default
+COPY files/telegraf.conf /etc/telegraf.conf
 COPY files/script.sh /script.sh
 RUN chmod 777 /script.sh
 ENTRYPOINT ["/script.sh"]
