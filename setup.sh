@@ -18,3 +18,5 @@ kubectl apply -f ./srcs/kubernetes/wordpress_conf.yaml
 kubectl apply -f ./srcs/kubernetes/mysql_conf.yaml
 kubectl apply -f ./srcs/kubernetes/grafana_conf.yaml 
 kubectl apply -f ./srcs/kubernetes/influxdb_conf.yaml
+
+minikube dashboard
