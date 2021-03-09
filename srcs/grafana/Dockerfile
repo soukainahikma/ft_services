@@ -8,6 +8,8 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 RUN apk add telegraf 
 RUN rc-update add telegraf default
 COPY files/telegraf.conf /etc/telegraf.conf
+RUN mv grafana-7.4.3 grafana
+COPY files/grafana.db /grafana/data/grafana.db
 COPY files/script.sh /script.sh
 RUN chmod 777 /script.sh
 CMD ./script.sh

@@ -1,6 +1,7 @@
 openrc default
 rc-service telegraf restart
-cd /grafana-7.4.3/bin && ./grafana-server
+cd /grafana/bin && ./grafana-server
+sleep 2
 while sleep 1;
 		do
 				pgrep grafana-server > /dev/null
